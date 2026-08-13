@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ethan Ransing</title>
+  <meta name="description" content="Personal website of Ethan Ransing.">
+
+  <!-- Set theme before paint to avoid a flash -->
+  <script>
+    (function () {
+      var t = localStorage.getItem('theme');
+      if (!t) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', t);
+    })();
+  </script>
+
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode" title="Toggle dark mode">
+    <!-- shown in light mode: click for dark -->
+    <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>
+    </svg>
+    <!-- shown in dark mode: click for light -->
+    <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="4"/>
+      <path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5L19 19M19 5l-1.5 1.5M6.5 17.5L5 19"/>
+    </svg>
+  </button>
+
+  <main>
+
+    <!-- ===== Intro: name + links, photo to the right ===== -->
+    <header class="intro">
+      <div class="intro-text">
+        <h1>Ethan Ransing</h1>
+        <nav class="links">
+          <a href="mailto:ethan.ransing@berkeley.edu">Email</a>
+          <a href="https://github.com/ethanransing">GitHub</a>
+          <a href="https://www.linkedin.com/in/ethan-ransing/">LinkedIn</a>
+        </nav>
+      </div>
+      <img class="avatar" src="images/profile.jpg" alt="Ethan Ransing"
+           onerror="this.onerror=null;this.src='images/placeholder.svg'">
+    </header>
+
+    <!-- ===== Experience ===== -->
+    <!--
+      To add more photos to any entry, just add more <img> tags inside
+      .carousel-track. The left/right arrows appear automatically.
+    -->
+    <section>
+      <h2>Experience</h2>
+
+      <article class="entry">
+        <div class="carousel">
+          <div class="carousel-track">
+            <img src="images/exp-aven.jpg" alt="" onerror="this.onerror=null;this.src='images/placeholder.svg'">
+          </div>
+          <button class="carousel-nav prev" aria-label="Previous image">&#8249;</button>
+          <button class="carousel-nav next" aria-label="Next image">&#8250;</button>
+        </div>
+        <div class="entry-body">
+          <h3 class="entry-title">Aven</h3>
+          <p class="entry-meta">Software Engineering Intern &middot; May 2026 &ndash; Aug 2026</p>
+        </div>
+      </article>
+
+      <article class="entry">
+        <div class="carousel">
+          <div class="carousel-track">
+            <img src="images/exp-bair.jpg" alt="" onerror="this.onerror=null;this.src='images/placeholder.svg'">
+          </div>
+          <button class="carousel-nav prev" aria-label="Previous image">&#8249;</button>
+          <button class="carousel-nav next" aria-label="Next image">&#8250;</button>
+        </div>
+        <div class="entry-body">
+          <h3 class="entry-title"><a href="https://autolab.berkeley.edu/index.shtml" target="_blank" rel="noopener">Berkeley Artificial Intelligence Research</a></h3>
+          <p class="entry-meta">Undergraduate Research Assistant &middot; Feb 2025 &ndash; Present</p>
+        </div>
+      </article>
+
+      <article class="entry">
+        <div class="carousel">
+          <div class="carousel-track">
+            <img class="img-left" src="images/exp-berkeleytime-1.jpg" alt="Berkeleytime landing page" onerror="this.onerror=null;this.src='images/placeholder.svg'">
+            <img class="img-left" src="images/exp-berkeleytime-2.jpg" alt="Berkeleytime GradTrak planner" onerror="this.onerror=null;this.src='images/placeholder.svg'">
+            <img class="img-left" src="images/exp-berkeleytime-3.jpg" alt="Berkeleytime course catalog" onerror="this.onerror=null;this.src='images/placeholder.svg'">
+          </div>
+          <button class="carousel-nav prev" aria-label="Previous image">&#8249;</button>
+          <button class="carousel-nav next" aria-label="Next image">&#8250;</button>
+        </div>
+        <div class="entry-body">
+          <h3 class="entry-title"><a href="https://berkeleytime.com/" target="_blank" rel="noopener">Berkeleytime</a></h3>
+          <p class="entry-meta">Project Lead &middot; Jan 2026 &ndash; Present</p>
+        </div>
+      </article>
+
+      <article class="entry">
+        <div class="carousel">
+          <div class="carousel-track">
+            <img src="images/exp-frc.jpg" alt="" onerror="this.onerror=null;this.src='images/placeholder.svg'">
+          </div>
+          <button class="carousel-nav prev" aria-label="Previous image">&#8249;</button>
+          <button class="carousel-nav next" aria-label="Next image">&#8250;</button>
+        </div>
+        <div class="entry-body">
+          <h3 class="entry-title"><a href="https://604robotics.com/" target="_blank" rel="noopener">FIRST Robotics Competition &mdash; Team 604 Quixilver</a></h3>
+          <p class="entry-meta">President &middot; Aug 2020 &ndash; Aug 2024</p>
+        </div>
+      </article>
+    </section>
+
+    <!-- ===== Publications ===== -->
+    <section class="stacked">
+      <h2>Publications</h2>
+
+      <article class="entry">
+        <div class="carousel">
+          <div class="carousel-track">
+            <video src="images/pub-trace.mp4" poster="images/pub-trace-poster.jpg"
+                   autoplay muted loop playsinline></video>
+          </div>
+          <button class="carousel-nav prev" aria-label="Previous image">&#8249;</button>
+          <button class="carousel-nav next" aria-label="Next image">&#8250;</button>
+        </div>
+        <div class="entry-body">
+          <p class="entry-meta">IROS 2026</p>
+          <h3 class="entry-title">TRACE: Interactive Bi-Directional Tracing of Monochrome Cables Amid Clutter</h3>
+          <p class="entry-authors">
+            Nidhya Shivakumar*, <strong>Ethan Ransing</strong>*, Josh Zhang, Shamak Gowda,
+            Kevin Yang, Miles Hua, Anika Agrawal, Justin Yu, Ken Goldberg
+          </p>
+          <p class="entry-links">
+            <a href="https://trace-paper.github.io/" target="_blank" rel="noopener">Site</a>
+            <a href="#" target="_blank" rel="noopener">Paper</a>
+          </p>
+        </div>
+      </article>
+
+      <article class="entry">
+        <div class="carousel">
+          <div class="carousel-track">
+            <video src="images/pub-get.mp4" poster="images/pub-get-poster.jpg"
+                   autoplay muted loop playsinline></video>
+          </div>
+          <button class="carousel-nav prev" aria-label="Previous image">&#8249;</button>
+          <button class="carousel-nav next" aria-label="Next image">&#8250;</button>
+        </div>
+        <div class="entry-body">
+          <p class="entry-meta">CASE 2026</p>
+          <h3 class="entry-title">2D and 3D Grasp Planners for the GET Asymmetrical Gripper</h3>
+          <p class="entry-authors">
+            Andrew Goldberg, <strong>Ethan Ransing</strong>, Anton Kourakin, Cael Magner,
+            Edward H. Adelson, Ken Goldberg
+          </p>
+          <p class="entry-links">
+            <a href="https://apgoldberg1.github.io/GET_Planning/" target="_blank" rel="noopener">Site</a>
+            <a href="#" target="_blank" rel="noopener">Paper</a>
+          </p>
+        </div>
+      </article>
+
+      <article class="entry">
+        <div class="carousel">
+          <div class="carousel-track">
+            <video src="images/pub-warprm.mp4" poster="images/pub-warprm-poster.jpg"
+                   autoplay muted loop playsinline></video>
+          </div>
+          <button class="carousel-nav prev" aria-label="Previous image">&#8249;</button>
+          <button class="carousel-nav next" aria-label="Next image">&#8250;</button>
+        </div>
+        <div class="entry-body">
+          <p class="entry-meta">CORL 2026 (under review)</p>
+          <h3 class="entry-title">WARP-RM: A Warp-Augmented Relative Progress Reward Model for Data Curation</h3>
+          <p class="entry-authors">
+            Justin Yu*, Andrew Goldberg*, Kavish Kondap*, Karim El-Refai*, <strong>Ethan Ransing</strong>,
+            Qianzhong Chen, Mac Schwager, Fred Shentu, Philipp Wu, Ken Goldberg
+          </p>
+          <p class="entry-links">
+            <a href="https://uynitsuj.github.io/warp-rm/" target="_blank" rel="noopener">Site</a>
+            <a href="#" target="_blank" rel="noopener">Paper</a>
+          </p>
+        </div>
+      </article>
+    </section>
+
+    <!-- ===== Projects ===== -->
+    <section class="stacked">
+      <h2>Projects</h2>
+
+      <article class="entry">
+        <div class="carousel">
+          <div class="carousel-track">
+            <video src="images/proj-foamring.mp4" poster="images/proj-foamring-poster.jpg"
+                   autoplay muted loop playsinline></video>
+            <video src="images/proj-foamring-2.mp4" poster="images/proj-foamring-2-poster.jpg"
+                   autoplay muted loop playsinline></video>
+          </div>
+          <button class="carousel-nav prev" aria-label="Previous image">&#8249;</button>
+          <button class="carousel-nav next" aria-label="Next image">&#8250;</button>
+        </div>
+        <div class="entry-body">
+          <h3 class="entry-title">Mobile Foam Ring Launching with Real-Time Control</h3>
+          <p class="entry-meta">Feb 2024 &ndash; April 2024</p>
+          <p class="entry-links">
+            <a href="https://github.com/frc604/2024-public" target="_blank" rel="noopener">Code</a>
+            <a href="https://youtu.be/bGivb7bY7kI?si=-EM33_wyTf1t3R8l&t=537" target="_blank" rel="noopener">Interview</a>
+          </p>
+        </div>
+      </article>
+
+      <article class="entry">
+        <div class="carousel">
+          <div class="carousel-track">
+            <img src="images/proj2.jpg" alt="" onerror="this.onerror=null;this.src='images/placeholder.svg'">
+          </div>
+          <button class="carousel-nav prev" aria-label="Previous image">&#8249;</button>
+          <button class="carousel-nav next" aria-label="Next image">&#8250;</button>
+        </div>
+        <div class="entry-body">
+          <h3 class="entry-title"><a href="#">Project Name</a></h3>
+          <p class="entry-meta">2023</p>
+          <p>
+            Another project entry.
+          </p>
+        </div>
+      </article>
+    </section>
+
+  </main>
+
+  <script>
+    // Minimal carousel: wire arrows to scroll one image at a time.
+    // Arrows are hidden when an entry has a single image.
+    document.querySelectorAll('.carousel').forEach(function (c) {
+      var track = c.querySelector('.carousel-track');
+      var count = track.querySelectorAll('img, video').length;
+      var prev = c.querySelector('.prev');
+      var next = c.querySelector('.next');
+      if (count <= 1) {
+        prev.hidden = true;
+        next.hidden = true;
+        return;
+      }
+      // Move by one slide, wrapping around at either end (infinite loop).
+      function go(dir) {
+        var w = track.clientWidth;
+        var i = Math.round(track.scrollLeft / w);
+        var target = ((i + dir) % count + count) % count;
+        track.scrollTo({ left: target * w, behavior: 'smooth' });
+      }
+      prev.addEventListener('click', function () { go(-1); });
+      next.addEventListener('click', function () { go(1); });
+    });
+
+    // Dark-mode toggle
+    document.getElementById('theme-toggle').addEventListener('click', function () {
+      var root = document.documentElement;
+      var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      root.setAttribute('data-theme', next);
+      localStorage.setItem('theme', next);
+    });
+  </script>
+</body>
+</html>
