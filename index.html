@@ -9,8 +9,7 @@
   <!-- Set theme before paint to avoid a flash -->
   <script>
     (function () {
-      var t = localStorage.getItem('theme');
-      if (!t) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      var t = localStorage.getItem('theme') || 'light';
       document.documentElement.setAttribute('data-theme', t);
     })();
   </script>
@@ -212,22 +211,6 @@
         </div>
       </article>
 
-      <article class="entry">
-        <div class="carousel">
-          <div class="carousel-track">
-            <img src="images/proj2.jpg" alt="" onerror="this.onerror=null;this.src='images/placeholder.svg'">
-          </div>
-          <button class="carousel-nav prev" aria-label="Previous image">&#8249;</button>
-          <button class="carousel-nav next" aria-label="Next image">&#8250;</button>
-        </div>
-        <div class="entry-body">
-          <h3 class="entry-title"><a href="#">Project Name</a></h3>
-          <p class="entry-meta">2023</p>
-          <p>
-            Another project entry.
-          </p>
-        </div>
-      </article>
     </section>
 
   </main>
