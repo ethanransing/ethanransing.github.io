@@ -37,8 +37,8 @@
         <h1>Ethan Ransing</h1>
         <nav class="links">
           <a href="mailto:ethan.ransing@berkeley.edu">Email</a>
-          <a href="https://github.com/ethanransing">GitHub</a>
-          <a href="https://www.linkedin.com/in/ethan-ransing/">LinkedIn</a>
+          <a href="https://github.com/ethanransing" target="_blank" rel="noopener">GitHub</a>
+          <a href="https://www.linkedin.com/in/ethan-ransing/" target="_blank" rel="noopener">LinkedIn</a>
         </nav>
       </div>
       <img class="avatar" src="images/profile.jpg" alt="Ethan Ransing"
@@ -246,6 +246,35 @@
       root.setAttribute('data-theme', next);
       localStorage.setItem('theme', next);
     });
+
+    /* ===== Analytics (GoatCounter) — inert until configured =====
+       To turn on: make a free site at https://www.goatcounter.com/ and put your
+       site code below (the "CODE" part of CODE.goatcounter.com). That's the only
+       change needed — pageviews and link-click events start working immediately. */
+    var GC_CODE = '';   // <-- e.g. 'ethanransing'
+    if (GC_CODE) {
+      // Load GoatCounter (auto-records the pageview: timestamp, referrer, country, browser)
+      var gc = document.createElement('script');
+      gc.async = true;
+      gc.src = '//gc.zgo.at/count.js';
+      gc.setAttribute('data-goatcounter', 'https://' + GC_CODE + '.goatcounter.com/count');
+      document.head.appendChild(gc);
+
+      // Track which links visitors click (Email / GitHub / LinkedIn, and each
+      // publication's & project's Site/Paper/Code/Interview links).
+      document.addEventListener('click', function (e) {
+        if (!(window.goatcounter && window.goatcounter.count)) return;
+        var a = e.target.closest ? e.target.closest('a[href]') : null;
+        var main = document.querySelector('main');
+        if (!a || !main || !main.contains(a)) return;
+        var label = (a.textContent || '').trim().replace(/\s+/g, ' ');
+        var entry = a.closest('.entry');
+        var titleEl = entry && entry.querySelector('.entry-title');
+        var ctx = titleEl ? titleEl.textContent.trim().replace(/\s+/g, ' ') : '';
+        var path = ctx && ctx !== label ? ctx + ' – ' + label : label;
+        window.goatcounter.count({ path: 'click: ' + path, event: true });
+      });
+    }
   </script>
 </body>
 </html>
