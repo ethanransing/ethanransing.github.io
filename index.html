@@ -3,14 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ethan Ransing</title>
+  <title>Ethan's Site</title>
   <meta name="description" content="Personal website of Ethan Ransing.">
+  <link id="favicon" rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text x=%2250%22 y=%2255%22 font-size=%22120%22 text-anchor=%22middle%22 dominant-baseline=%22central%22>🧋</text></svg>">
 
   <!-- Set theme before paint to avoid a flash -->
   <script>
+    function setFavicon(theme) {
+      var emoji = '🧋';
+      var svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text x="50" y="55" font-size="120" text-anchor="middle" dominant-baseline="central">' + emoji + '</text></svg>';
+      document.getElementById('favicon').setAttribute('href', 'data:image/svg+xml,' + encodeURIComponent(svg));
+    }
     (function () {
       var t = localStorage.getItem('theme') || 'light';
       document.documentElement.setAttribute('data-theme', t);
+      setFavicon(t);
     })();
   </script>
 
@@ -45,6 +52,19 @@
            onerror="this.onerror=null;this.src='images/placeholder.svg'">
     </header>
 
+    <!-- ===== About ===== -->
+    <section class="about">
+      <p>I'm Ethan, a third-year undergraduate studying Electrical Engineering and Computer Science at UC Berkeley. 
+        I'm excited about building impactful software, particularly in robotics, financial infrastructure, and agentic systems.
+      </p>
+      <p>
+        At the <a href="https://autolab.berkeley.edu/index.shtml" target="_blank" rel="noopener">AUTOLab</a>
+        (part of the <a href="https://bair.berkeley.edu/" target="_blank" rel="noopener">Berkeley Artificial Intelligence Research</a> cluster),
+        advised by Prof. Ken Goldberg, I work on robot manipulation and RL environments for robot learning.
+        I'm traveling to Pittsburgh to present our work on robotic cable tracing at IROS 2026 — come say hi!
+      </p>
+    </section>
+
     <!-- ===== Experience ===== -->
     <!--
       To add more photos to any entry, just add more <img> tags inside
@@ -62,7 +82,7 @@
           <button class="carousel-nav next" aria-label="Next image">&#8250;</button>
         </div>
         <div class="entry-body">
-          <h3 class="entry-title">Aven</h3>
+          <h3 class="entry-title"><a href="https://www.aven.com/" target="_blank" rel="noopener">Aven</a></h3>
           <p class="entry-meta">Software Engineering Intern &middot; May 2026 &ndash; Aug 2026</p>
         </div>
       </article>
@@ -70,14 +90,19 @@
       <article class="entry">
         <div class="carousel">
           <div class="carousel-track">
-            <img src="images/exp-bair.jpg" alt="" onerror="this.onerror=null;this.src='images/placeholder.svg'">
+            <img src="images/exp-bair-agenticrobotics.png" alt="" onerror="this.onerror=null;this.src='images/placeholder.svg'">
+            <img src="images/exp-bair-abstract.png" alt="" onerror="this.onerror=null;this.src='images/placeholder.svg'">
+            <img src="images/exp-bair-concept.png" alt="" onerror="this.onerror=null;this.src='images/placeholder.svg'">
+            <img class="media-contain" src="images/exp-bair-icp.gif" alt="" onerror="this.onerror=null;this.src='images/placeholder.svg'">
+            <video class="media-zoom-mid" src="images/exp-bair-pi0.mp4" poster="images/exp-bair-pi0-poster.jpg"
+                   autoplay muted loop playsinline></video>
           </div>
           <button class="carousel-nav prev" aria-label="Previous image">&#8249;</button>
           <button class="carousel-nav next" aria-label="Next image">&#8250;</button>
         </div>
         <div class="entry-body">
           <h3 class="entry-title"><a href="https://autolab.berkeley.edu/index.shtml" target="_blank" rel="noopener">Berkeley Artificial Intelligence Research</a></h3>
-          <p class="entry-meta">Undergraduate Research Assistant &middot; Feb 2025 &ndash; Present</p>
+          <p class="entry-meta">Undergraduate Researcher &middot; Feb 2025 &ndash; Present</p>
         </div>
       </article>
 
@@ -112,9 +137,9 @@
       </article>
     </section>
 
-    <!-- ===== Publications ===== -->
+    <!-- ===== Research ===== -->
     <section class="stacked">
-      <h2>Publications</h2>
+      <h2>Research</h2>
 
       <article class="entry">
         <div class="carousel">
@@ -126,7 +151,9 @@
           <button class="carousel-nav next" aria-label="Next image">&#8250;</button>
         </div>
         <div class="entry-body">
-          <p class="entry-meta">IROS 2026</p>
+          <p class="entry-meta">IEEE/RSJ International Conference on
+            Intelligent
+            Robots and Systems (IROS), 2026</p>
           <h3 class="entry-title">TRACE: Interactive Bi-Directional Tracing of Monochrome Cables Amid Clutter</h3>
           <p class="entry-authors">
             Nidhya Shivakumar*, <strong>Ethan Ransing</strong>*, Josh Zhang, Shamak Gowda,
@@ -149,7 +176,7 @@
           <button class="carousel-nav next" aria-label="Next image">&#8250;</button>
         </div>
         <div class="entry-body">
-          <p class="entry-meta">CASE 2026</p>
+          <p class="entry-meta">IEEE International Conference on Automation Science and Engineering (CASE), 2026</p>
           <h3 class="entry-title">2D and 3D Grasp Planners for the GET Asymmetrical Gripper</h3>
           <p class="entry-authors">
             Andrew Goldberg, <strong>Ethan Ransing</strong>, Anton Kourakin, Cael Magner,
@@ -172,7 +199,7 @@
           <button class="carousel-nav next" aria-label="Next image">&#8250;</button>
         </div>
         <div class="entry-body">
-          <p class="entry-meta">CORL 2026 (under review)</p>
+          <p class="entry-meta">The Conference on Robot Learning (CORL), 2026</p>
           <h3 class="entry-title">WARP-RM: A Warp-Augmented Relative Progress Reward Model for Data Curation</h3>
           <p class="entry-authors">
             Justin Yu*, Andrew Goldberg*, Kavish Kondap*, Karim El-Refai*, <strong>Ethan Ransing</strong>,
@@ -245,6 +272,7 @@
       var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
       root.setAttribute('data-theme', next);
       localStorage.setItem('theme', next);
+      setFavicon(next);
     });
 
     /* ===== Analytics (GoatCounter) — inert until configured =====

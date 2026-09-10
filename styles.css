@@ -126,6 +126,7 @@ section { margin-top: 56px; }
   display: flex;
   height: 100%;
   overflow-x: auto;
+  overflow-y: hidden;
   scroll-snap-type: x mandatory;
   scroll-behavior: smooth;
   scrollbar-width: none;          /* Firefox */
@@ -143,6 +144,8 @@ section { margin-top: 56px; }
   display: block;
 }
 .carousel-track img.img-left { object-position: left center; }
+.carousel-track .media-contain { object-fit: contain; }
+.carousel-track .media-zoom-mid { object-fit: contain; transform: scale(1.8); }
 
 .carousel-nav {
   position: absolute;
