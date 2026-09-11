@@ -245,7 +245,7 @@ code {
 
 /* ===== Mobile ===== */
 @media (max-width: 560px) {
-  main { padding: 48px 20px 72px; }
+  main { padding: 64px 20px 72px; }
 
   .intro { gap: 20px; }
 
