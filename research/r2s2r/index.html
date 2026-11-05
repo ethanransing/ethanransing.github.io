@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Real-to-Sim-to-Real Learning for Bimanual Manipulation &middot; Ethan Ransing</title>
+  <meta name="description" content="Ethan Ransing's ongoing research at Berkeley AUTOLab: object reconstruction, staged PPO cup manipulation, and contact-physics diagnostics in GPU simulation.">
+  <link id="favicon" rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text x=%2250%22 y=%2255%22 font-size=%22120%22 text-anchor=%22middle%22 dominant-baseline=%22central%22>🧋</text></svg>">
+
+  <!-- Set theme before paint to avoid a flash -->
+  <script>
+    function setFavicon(theme) {
+      var emoji = '🧋';
+      var svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text x="50" y="55" font-size="120" text-anchor="middle" dominant-baseline="central">' + emoji + '</text></svg>';
+      document.getElementById('favicon').setAttribute('href', 'data:image/svg+xml,' + encodeURIComponent(svg));
+    }
+    (function () {
+      var t = localStorage.getItem('theme') || 'light';
+      document.documentElement.setAttribute('data-theme', t);
+      setFavicon(t);
+    })();
+  </script>
+
+  <link rel="stylesheet" href="../../styles.css">
+</head>
+<body>
+  <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode" title="Toggle dark mode">
+    <!-- shown in light mode: click for dark -->
+    <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>
+    </svg>
+    <!-- shown in dark mode: click for light -->
+    <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="4"/>
+      <path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5L19 19M19 5l-1.5 1.5M6.5 17.5L5 19"/>
+    </svg>
+  </button>
+
+  <main class="project">
+    <p class="back-link"><a href="../../">&larr; Back to homepage</a></p>
+
+    <header class="project-header">
+      <h1>Real-to-Sim-to-Real Learning for Bimanual Manipulation</h1>
+      <p class="entry-meta">Ongoing research &middot; Berkeley AUTOLab</p>
+    </header>
+
+    <section id="demos">
+      <h2>Overview and demonstration</h2>
+      <p>
+        This project turns captures of real objects into simulated manipulation tasks, then uses those
+        tasks to train visual policies. The workflow has five stages:
+      </p>
+      <ol>
+        <li><strong>Real capture.</strong> Calibrated RGB and depth views of objects, plus real demonstrations.</li>
+        <li><strong>Simulation.</strong> Reconstructed assets and a calibrated bimanual scene in GPU contact simulation.</li>
+        <li><strong>Teacher policy.</strong> Reinforcement learning on privileged simulator state, producing contact-rich motions.</li>
+        <li><strong>Rendered experience.</strong> Verified simulated motions rendered from multiple views under varied lighting.</li>
+        <li><strong>Visual policy.</strong> &pi;0.5 fine-tuned on the rendered experience.</li>
+      </ol>
+
+      <figure>
+        <video src="../../images/r2s2r-cup.mp4" poster="../../images/r2s2r-cup-poster.jpg"
+               controls muted playsinline preload="none"
+               aria-label="Photorealistic simulation from four camera views: two robot arms flip a red cup upright on a table, then release it"></video>
+        <figcaption>
+          Photorealistic simulation, not hardware footage, at its original 6.25 fps and playback speed.
+          The first 25 seconds of one selected successful rollout from the 32-start evaluation described below.
+          <a href="../../images/r2s2r-cup-full.mp4" target="_blank" rel="noopener">Full 36-second rollout</a> (7.3 MB).
+        </figcaption>
+      </figure>
+    </section>
+
+    <section id="contributions">
+      <h2>My contributions</h2>
+      <ul>
+        <li><strong>Cup-policy development.</strong> Task curriculum, reward and contact engineering, and integration of the learned stages with an engineered controller.</li>
+        <li><strong>Demonstration and contact guidance.</strong> Using a contact reference derived from a demonstration to guide where and how the policy engages the cup.</li>
+        <li><strong>Simulator contact diagnostics.</strong> Separating collider geometry errors from numerical collision errors, then evaluating a fix for each.</li>
+        <li><strong>Reusable object reconstruction pipeline.</strong> Capture preparation, metric editable geometry, photographic texture fitting, Blender evaluation, held-out quality gates, and portable asset bundles.</li>
+      </ul>
+      <p>
+        The simulation station and renderer are shared team infrastructure. The residual-PPO and &pi;0.5
+        results below are broader team work, and are labeled that way.
+      </p>
+    </section>
+
+    <section id="technical-notes">
+      <h2>Learning the cup manipulation sequence</h2>
+      <p>
+        The task is to flip a cup with two arms and leave it standing on the table. A flip counts as
+        successful only if the cup is upright, supported by the table, released and settled, and still
+        valid at the end of the episode. This is a staged controller, not one end-to-end neural policy:
+      </p>
+      <ol>
+        <li><strong>First-tip PPO.</strong> A learned actor makes the first tip. It was trained with PPO plus imitation.</li>
+        <li><strong>Physical hand repositioning.</strong> An explicit controller moves the hands into position for the second stage. It runs in the physics simulation, so nothing is teleported at the handoff.</li>
+        <li><strong>Finishing PPO.</strong> A second learned actor completes the flip. It was trained with ordinary PPO, without imitation.</li>
+      </ol>
+      <p>
+        Each actor reads 243 privileged state and contact-reference features, and outputs 12 relative
+        Cartesian commands (translation and rotation for each hand) every 40 ms over a 1 ms physics step.
+        The finisher is rewarded for qualified completion, new orientation progress, contact acquisition,
+        approach, and bounded demonstration-contact progress. Its costs cover robot&ndash;cup force above 5 N,
+        forbidden collisions, sustained robot&ndash;table load, abrupt action changes, and failures.
+      </p>
+      <p class="result">
+        <strong>19/32 retained full flips</strong> in a nominal development evaluation with a 36-second
+        deadline. The 32 starts were frozen development starts, not training data. This used the historical
+        simulator, before the later contact corrections, and the completion hold is a controller intervention.
+      </p>
+    </section>
+
+    <section id="contact-physics">
+      <h2>Diagnosing contact physics</h2>
+      <p>
+        Unexpected contact during cup rollouts could have come from geometry, rendering, timing, or collision
+        arithmetic, so I tested those explanations separately instead of tuning around them in the reward.
+        Two distinct issues came out of that work, and each fix was evaluated on its own.
+      </p>
+
+      <h3>Geometry discrepancy</h3>
+      <p>
+        The gripper's box colliders did not match its visible meshes. Their corners extended about 2.5 mm
+        beyond the visible pads, so the simulator could report contact where no visible surface touched the cup.
+      </p>
+      <figure>
+        <a href="../../images/r2s2r-contact-original.png" target="_blank" rel="noopener">
+          <img src="../../images/r2s2r-contact-original.png" loading="lazy" width="2250" height="750"
+               alt="Three plots of a saved pose. The cyan collision boxes extend past the gray gripper pad, and the yellow contact point sits on a box corner above the visible pad, just under the red cup.">
+        </a>
+        <figcaption>
+          Original colliders: box corners extend about 2.5 mm beyond the visible gripper pads.
+          <a href="../../images/r2s2r-contact-original.png" target="_blank" rel="noopener">Full resolution</a>.
+        </figcaption>
+      </figure>
+      <figure>
+        <a href="../../images/r2s2r-contact-fitted.png" target="_blank" rel="noopener">
+          <img src="../../images/r2s2r-contact-fitted.png" loading="lazy" width="2250" height="750"
+               alt="The same saved pose with fitted cyan convex hulls that follow the gray pad surface. The yellow point marks the original box contact location, now clear of the fitted geometry.">
+        </a>
+        <figcaption>
+          Fitted convex replacement at the same saved pose; the yellow point marks the original box contact.
+          <a href="../../images/r2s2r-contact-fitted.png" target="_blank" rel="noopener">Full resolution</a>.
+        </figcaption>
+      </figure>
+      <p class="result">
+        The fitted replacement achieved <strong>at most 0.053 mm sampled outer-surface mismatch</strong>,
+        measured over 918 samples per pad. This is not a certified surface-error bound, and no full-policy
+        success gain has been established.
+      </p>
+
+      <h3>Numerical collision issue</h3>
+      <p>
+        Separately, a minimal cup and table reproduction isolated numerical errors in GPU GJK simplex
+        projection: overlapping shapes could produce no contact. I evaluated an opt-in, higher-precision
+        correction using matched physical replays.
+      </p>
+      <p class="result">
+        Missing-contact events fell from <strong>247/3,000 to 0/3,000 steps</strong> across three selected
+        one-second diagnostic windows. This is a bounded diagnostic from a small development cohort. It is not
+        proof of general solver correctness or of improved policy reliability.
+      </p>
+    </section>
+
+    <section id="reconstruction">
+      <h2>Reconstructing objects for simulation</h2>
+      <p>
+        The reconstruction pipeline converts calibrated captures into editable, metric geometry with textures
+        fitted from training photographs. Assets are rendered in Blender and scored on views withheld from
+        generation, so simulated tasks can start from assets with recorded quality checks.
+      </p>
+      <figure>
+        <a href="../../images/r2s2r-bottle.jpg" target="_blank" rel="noopener">
+          <img src="../../images/r2s2r-bottle.jpg" loading="lazy" width="1500" height="1350"
+               alt="Three rows of bottle views in five columns: reference photograph, published final asset, fixed-geometry control, fresh reconstruction with visible surface artifacts, and refined reconstruction with those artifacts removed.">
+        </a>
+        <figcaption>
+          Left to right: reference photograph, previously published asset, fixed-geometry control, fresh
+          reconstruction, and refined reconstruction, on held-out views.
+          <a href="../../images/r2s2r-bottle.jpg" target="_blank" rel="noopener">Full resolution</a>.
+        </figcaption>
+      </figure>
+      <p class="result">
+        The refined bottle reached <strong>silhouette IoU 0.9536</strong> and
+        <strong>depth-consistency MAE 1.6758 mm</strong> on nine historical test views. The result required
+        directed refinement, because the initial fresh generation did not pass. Depth was compared against
+        estimated sensor depth, so this agreement is not independent physical dimensional accuracy.
+      </p>
+      <p>
+        The bowl is a second example, run with default prompts and no object-specific intervention. Its
+        status remains <em>needs review</em>: the held-out test views pass the quality gates, but validation
+        views fail them, and the evidence points to an input alignment problem in the capture.
+      </p>
+      <figure class="figure-narrow">
+        <a href="../../images/r2s2r-bowl.jpg" target="_blank" rel="noopener">
+          <img src="../../images/r2s2r-bowl.jpg" loading="lazy" width="1150" height="1800"
+               alt="Six rows of bowl views in five columns: reference, render, contour overlay on the photograph, absolute RGB error heat map, and neutral gray geometry.">
+        </a>
+        <figcaption>
+          Held-out bowl views: reference, render, contour overlay, RGB error, and editable geometry.
+          <a href="../../images/r2s2r-bowl.jpg" target="_blank" rel="noopener">Full resolution</a>.
+        </figcaption>
+      </figure>
+    </section>
+
+    <section id="team-pipeline">
+      <h2>Team pipeline and results</h2>
+      <p>
+        <em>This section is broader team work, not my individual result.</em> The team uses a residual-PPO
+        teacher to generate simulated motions, verifies them, renders them from multiple views, and fine-tunes
+        &pi;0.5 on the result. The teacher configuration reported here is called H1.
+      </p>
+      <figure>
+        <a href="../../images/r2s2r-h1-coverage.png" target="_blank" rel="noopener">
+          <img src="../../images/r2s2r-h1-coverage.png" loading="lazy" width="2080" height="1440"
+               alt="Team coverage charts comparing the reference controller with H1 by yaw, arm role, and table position. H1, labeled PPO, completes 208 layouts and the reference completes 86, from the same 480 proposals.">
+        </a>
+        <figcaption>
+          Team result, simulation data-generation coverage on the same 480 proposals. REF is the
+          demonstration-derived reference controller; PPO is H1.
+          <a href="../../images/r2s2r-h1-coverage.png" target="_blank" rel="noopener">Full resolution</a>.
+        </figcaption>
+      </figure>
+      <ul>
+        <li><strong>Layout yield: 208 versus 86</strong> complete layouts from 480 proposals, approximately 2.4&times; the usable layouts of a demonstration-derived reference controller.</li>
+        <li><strong>Fresh confirmation: 89/256 versus 43/256</strong> full paths, in a separate simulation confirmation.</li>
+        <li><strong>H1 student: 20,000 updates</strong> on 832 physical trajectories and 1,664 lighting episodes. Training completed in the November 5 repository snapshot; student task evaluation was still pending.</li>
+      </ul>
+      <p>
+        Both comparisons are against that reference controller, not from-scratch PPO, and both are in
+        simulation. They do not show that H1 beats from-scratch PPO or improves hardware performance.
+      </p>
+      <p>
+        Earlier &pi;0.5 box policies, which are not H1, produced selected real-robot successes that were
+        reviewed visually. Those examples are not an aggregate hardware success rate.
+      </p>
+    </section>
+
+    <section id="limitations">
+      <h2>Limitations and ongoing work</h2>
+      <ul>
+        <li><strong>Cup policy.</strong> Simulation only, with no sim-to-real transfer. The 19/32 result has not been re-measured under the corrected contact physics. Reviewed failures include a finishing actor missing the cup, a sideways roll, and a repositioning abort.</li>
+        <li><strong>Contact physics.</strong> The corrections are opt-in and backed by bounded diagnostics, with no measured gain in policy success.</li>
+        <li><strong>Reconstruction.</strong> Unobserved surfaces are inferred and textures retain capture lighting. Neither example shows unattended, high-quality results on every new object.</li>
+        <li><strong>Ongoing.</strong> H1 student task evaluation is pending, and further reconstruction candidates have not yet been validated.</li>
+      </ul>
+    </section>
+  </main>
+
+  <script>
+    // Pause the demonstration when it leaves the viewport.
+    var demoObserver = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) e.target.pause();
+      });
+    });
+    document.querySelectorAll('video').forEach(function (v) { demoObserver.observe(v); });
+
+    // Dark-mode toggle
+    document.getElementById('theme-toggle').addEventListener('click', function () {
+      var root = document.documentElement;
+      var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      root.setAttribute('data-theme', next);
+      localStorage.setItem('theme', next);
+      setFavicon(next);
+    });
+
+    /* ===== Analytics (GoatCounter): same setup as the homepage ===== */
+    var GC_CODE = 'ethanransing';   // GoatCounter site code
+    if (GC_CODE) {
+      var gc = document.createElement('script');
+      gc.async = true;
+      gc.src = '//gc.zgo.at/count.js';
+      gc.setAttribute('data-goatcounter', 'https://' + GC_CODE + '.goatcounter.com/count');
+      document.head.appendChild(gc);
+
+      document.addEventListener('click', function (e) {
+        if (!(window.goatcounter && window.goatcounter.count)) return;
+        var a = e.target.closest ? e.target.closest('a[href]') : null;
+        var main = document.querySelector('main');
+        if (!a || !main || !main.contains(a)) return;
+        var label = (a.textContent || '').trim().replace(/\s+/g, ' ');
+        window.goatcounter.count({ path: 'click: r2s2r – ' + label, event: true });
+      });
+    }
+  </script>
+</body>
+</html>

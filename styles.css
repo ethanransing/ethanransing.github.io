@@ -168,6 +168,15 @@ section { margin-top: 56px; }
 .carousel-track img.img-left { object-position: left center; }
 .carousel-track .media-contain { object-fit: contain; }
 .carousel-track .media-zoom-mid { object-fit: contain; transform: scale(1.8); }
+/* Slides that wrap their image (full-resolution link, reduced-motion still) */
+.carousel-track .carousel-slide {
+  flex: 0 0 100%;
+  width: 100%;
+  height: 100%;
+  scroll-snap-align: center;
+  display: block;
+}
+.carousel-track a.carousel-slide { cursor: zoom-in; }
 
 .carousel-nav {
   position: absolute;
@@ -195,10 +204,28 @@ section { margin-top: 56px; }
 .carousel-nav.prev { left: 8px; }
 .carousel-nav.next { right: 8px; }
 .carousel-nav[hidden] { display: none; }
+.carousel-nav:focus-visible { outline: 2px solid #fff; outline-offset: -3px; }
 
-/* Touch devices: no hover, so keep arrows gently visible */
+/* Touch devices: no hover, so keep arrows visible at a tappable size */
 @media (hover: none) {
-  .carousel-nav { opacity: 0.75; }
+  .carousel-nav {
+    width: 44px;
+    height: 44px;
+    opacity: 1;
+    background: rgba(20, 20, 20, 0.55);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .carousel-track { scroll-behavior: auto; }
+  .carousel-track .media-zoom-mid { transform: none; }
+}
+
+.carousel-caption {
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.45;
+  margin: 0;
 }
 
 .entry-body { min-width: 0; }
@@ -228,12 +255,54 @@ section { margin-top: 56px; }
   margin: 0.35em 0 0;
 }
 
+.entry-description {
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin: 0.35em 0 0;
+}
+
 .entry-links {
   display: flex;
   flex-wrap: wrap;
   gap: 16px;
   font-size: 0.92rem;
   margin: 0.4em 0 0;
+}
+
+/* ===== Project detail page ===== */
+.back-link { font-size: 0.92rem; margin-bottom: 32px; }
+
+.project-header .entry-meta { margin-bottom: 0; }
+
+.project h3 { margin-top: 1.6em; }
+
+.project ul,
+.project ol { margin: 0 0 1em; padding-left: 1.3em; }
+.project li { margin-bottom: 0.5em; }
+
+.project figure { margin: 1.4em 0; }
+.project figure img,
+.project figure video {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface);
+}
+.project figure.figure-narrow { max-width: 520px; }
+.project figure a:has(img) { cursor: zoom-in; }
+.project figcaption {
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.45;
+  margin-top: 8px;
+}
+.project figcaption a { color: inherit; }
+
+.result {
+  border-left: 2px solid var(--border);
+  padding-left: 14px;
 }
 
 code {
