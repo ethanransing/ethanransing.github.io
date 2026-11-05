@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Real-to-Sim-to-Real Learning for Bimanual Manipulation &middot; Ethan Ransing</title>
+  <title>Real2Sim2Real for Non-Prehensile Manipulation &middot; Ethan Ransing</title>
   <meta name="description" content="Ethan Ransing's ongoing research at Berkeley AUTOLab: object reconstruction, staged PPO cup manipulation, and contact-physics diagnostics in GPU simulation.">
   <link id="favicon" rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text x=%2250%22 y=%2255%22 font-size=%22120%22 text-anchor=%22middle%22 dominant-baseline=%22central%22>🧋</text></svg>">
 
@@ -40,7 +40,7 @@
     <p class="back-link"><a href="../../">&larr; Back to homepage</a></p>
 
     <header class="project-header">
-      <h1>Real-to-Sim-to-Real Learning for Bimanual Manipulation</h1>
+      <h1>Real2Sim2Real for Non-Prehensile Manipulation</h1>
       <p class="entry-meta">Ongoing research &middot; Berkeley AUTOLab</p>
     </header>
 
@@ -61,11 +61,11 @@
       <figure>
         <video src="../../images/r2s2r-cup.mp4" poster="../../images/r2s2r-cup-poster.jpg"
                controls muted playsinline preload="none"
-               aria-label="Photorealistic simulation from four camera views: two robot arms flip a red cup upright on a table, then release it"></video>
+               aria-label="Photorealistic simulation at 2x speed, from four camera views: two robot arms flip a red cup upright on a table, then release it"></video>
         <figcaption>
-          Photorealistic simulation, not hardware footage, at its original 6.25 fps and playback speed.
+          Photorealistic simulation, not hardware footage, sped up to 2&times; with every original frame kept and none interpolated.
           The first 25 seconds of one selected successful rollout from the 32-start evaluation described below.
-          <a href="../../images/r2s2r-cup-full.mp4" target="_blank" rel="noopener">Full 36-second rollout</a> (7.3 MB).
+          <a href="../../images/r2s2r-cup-full.mp4" target="_blank" rel="noopener">Full 36-second rollout at original speed</a> (7.3 MB).
         </figcaption>
       </figure>
     </section>
@@ -170,6 +170,18 @@
         generation, so simulated tasks can start from assets with recorded quality checks.
       </p>
       <figure>
+        <a href="../../images/r2s2r-can.jpg" target="_blank" rel="noopener">
+          <img src="../../images/r2s2r-can.jpg" loading="lazy" width="1426" height="560"
+               alt="The same view of a tomato can three ways: source photograph, untextured reconstructed mesh, and appearance-matched render with visible texture seams.">
+        </a>
+        <figcaption>
+          Source photograph, untextured mesh, and appearance-matched render, all from one held-out camera.
+          This can remains <em>needs review</em>: texture seams are visible, and some appearance, texture-coverage,
+          and validation depth gates did not pass.
+          <a href="../../images/r2s2r-can.jpg" target="_blank" rel="noopener">Full resolution</a>.
+        </figcaption>
+      </figure>
+      <figure>
         <a href="../../images/r2s2r-bottle.jpg" target="_blank" rel="noopener">
           <img src="../../images/r2s2r-bottle.jpg" loading="lazy" width="1500" height="1350"
                alt="Three rows of bottle views in five columns: reference photograph, published final asset, fixed-geometry control, fresh reconstruction with visible surface artifacts, and refined reconstruction with those artifacts removed.">
@@ -187,7 +199,7 @@
         estimated sensor depth, so this agreement is not independent physical dimensional accuracy.
       </p>
       <p>
-        The bowl is a second example, run with default prompts and no object-specific intervention. Its
+        The bowl is another example, run with default prompts and no object-specific intervention. Its
         status remains <em>needs review</em>: the held-out test views pass the quality gates, but validation
         views fail them, and the evidence points to an input alignment problem in the capture.
       </p>
@@ -241,7 +253,7 @@
       <ul>
         <li><strong>Cup policy.</strong> Simulation only, with no sim-to-real transfer. The 19/32 result has not been re-measured under the corrected contact physics. Reviewed failures include a finishing actor missing the cup, a sideways roll, and a repositioning abort.</li>
         <li><strong>Contact physics.</strong> The corrections are opt-in and backed by bounded diagnostics, with no measured gain in policy success.</li>
-        <li><strong>Reconstruction.</strong> Unobserved surfaces are inferred and textures retain capture lighting. Neither example shows unattended, high-quality results on every new object.</li>
+        <li><strong>Reconstruction.</strong> Unobserved surfaces are inferred and textures retain capture lighting. None of these examples shows unattended, high-quality results on every new object.</li>
         <li><strong>Ongoing.</strong> H1 student task evaluation is pending, and further reconstruction candidates have not yet been validated.</li>
       </ul>
     </section>

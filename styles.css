@@ -221,13 +221,6 @@ section { margin-top: 56px; }
   .carousel-track .media-zoom-mid { transform: none; }
 }
 
-.carousel-caption {
-  color: var(--muted);
-  font-size: 0.9rem;
-  line-height: 1.45;
-  margin: 0;
-}
-
 .entry-body { min-width: 0; }
 
 /* Stacked layout: visuals are the focal point — full-width media, text below */
