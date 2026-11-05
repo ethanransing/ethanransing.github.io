@@ -102,6 +102,28 @@ section { margin-top: 56px; }
   margin-top: 10px;
 }
 
+.links a {
+  display: inline-flex;
+  padding: 4px;
+  margin: -4px;   /* larger tap target without shifting the layout */
+  transition: color 0.12s ease;
+}
+
+.links svg {
+  display: block;
+  width: 26px;
+  height: 26px;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
 /* ===== Entries (experience / projects) ===== */
 .entry {
   display: flex;
