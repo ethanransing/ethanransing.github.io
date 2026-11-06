@@ -182,37 +182,48 @@ section { margin-top: 56px; }
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  width: 30px;
-  height: 40px;
+  width: 38px;
+  height: 38px;
   border: none;
-  border-radius: 5px;
-  background: rgba(20, 20, 20, 0.32);
-  color: #fff;
-  font-size: 18px;
+  border-radius: 50%;
+  background: #fff;
+  color: #1a1a1a;
+  font-size: 26px;
   line-height: 1;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0 0 2px;
-  opacity: 0;
-  transition: opacity 0.12s ease;
+  padding: 0 0 4px;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.45);
+  transition: transform 0.12s ease;
 }
-.carousel:hover .carousel-nav,
-.carousel:focus-within .carousel-nav { opacity: 1; }
-.carousel-nav:hover { background: rgba(20, 20, 20, 0.5); }
+.carousel-nav:hover { transform: translateY(-50%) scale(1.1); }
 .carousel-nav.prev { left: 8px; }
 .carousel-nav.next { right: 8px; }
 .carousel-nav[hidden] { display: none; }
-.carousel-nav:focus-visible { outline: 2px solid #fff; outline-offset: -3px; }
+.carousel-nav:focus-visible { outline: 3px solid #1a6fd6; outline-offset: 2px; }
 
-/* Touch devices: no hover, so keep arrows visible at a tappable size */
+/* Slide position, so it's clear there is more to see */
+.carousel-count {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  background: rgba(20, 20, 20, 0.72);
+  color: #fff;
+  font-size: 12px;
+  line-height: 1.4;
+  font-variant-numeric: tabular-nums;
+  pointer-events: none;
+}
+
+/* Touch devices: tappable size */
 @media (hover: none) {
   .carousel-nav {
     width: 44px;
     height: 44px;
-    opacity: 1;
-    background: rgba(20, 20, 20, 0.55);
   }
 }
 
@@ -265,8 +276,6 @@ section { margin-top: 56px; }
 /* ===== Project detail page ===== */
 .back-link { font-size: 0.92rem; margin-bottom: 32px; }
 
-.project-header .entry-meta { margin-bottom: 0; }
-
 .project h3 { margin-top: 1.6em; }
 
 .project ul,
@@ -283,7 +292,78 @@ section { margin-top: 56px; }
   border-radius: 6px;
   background: var(--surface);
 }
-.project figure.figure-narrow { max-width: 520px; }
+.project .pipeline {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 24px;
+  margin: 1.8em 0 0;
+  padding: 0;
+  list-style: none;
+}
+.project .pipeline li {
+  position: relative;
+  margin: 0;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface);
+  font-size: 0.88rem;
+  line-height: 1.35;
+}
+.pipeline li:not(:last-child)::after {
+  content: "\2192";
+  position: absolute;
+  top: 50%;
+  left: 100%;
+  width: 24px;
+  transform: translateY(-50%);
+  color: var(--muted);
+  font-size: 1.05rem;
+  text-align: center;
+}
+@media (max-width: 760px) {
+  .project .pipeline { grid-template-columns: 1fr; gap: 26px; }
+  .pipeline li:not(:last-child)::after {
+    content: "\2193";
+    top: 100%;
+    left: 0;
+    width: 100%;
+    transform: none;
+    line-height: 26px;
+  }
+}
+
+.recon-steps {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+  margin: 1em 0;
+}
+.project .recon-steps figure { margin: 0; }
+.project .recon-steps figcaption { font-size: 0.8rem; margin-top: 5px; }
+.recon-note { color: var(--muted); font-size: 0.9rem; }
+@media (max-width: 560px) {
+  .recon-steps { grid-template-columns: repeat(3, 1fr); }
+}
+
+.demo-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.project .stage-pair figure { margin: 0; }
+
+.clip-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin: 1.4em 0;
+}
+.project .clip-grid figure { margin: 0; }
+@media (max-width: 560px) {
+  .clip-grid { grid-template-columns: repeat(2, 1fr); }
+}
 .project figure a:has(img) { cursor: zoom-in; }
 .project figcaption {
   color: var(--muted);
@@ -292,11 +372,6 @@ section { margin-top: 56px; }
   margin-top: 8px;
 }
 .project figcaption a { color: inherit; }
-
-.result {
-  border-left: 2px solid var(--border);
-  padding-left: 14px;
-}
 
 code {
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;

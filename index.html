@@ -81,6 +81,81 @@
       </p>
     </section>
 
+    <!-- ===== Experience ===== -->
+    <!--
+      To add more photos to any entry, just add more <img> tags inside
+      .carousel-track. The left/right arrows appear automatically.
+    -->
+    <section>
+      <h2>Experience</h2>
+
+      <article class="entry">
+        <div class="carousel">
+          <div class="carousel-track">
+            <img src="images/exp-aven.webp" alt="Hand holding an Aven credit card" onerror="this.onerror=null;this.src='images/placeholder.svg'">
+          </div>
+          <button class="carousel-nav prev" aria-label="Previous image">&#8249;</button>
+          <button class="carousel-nav next" aria-label="Next image">&#8250;</button>
+        </div>
+        <div class="entry-body">
+          <h3 class="entry-title"><a href="https://www.aven.com/" target="_blank" rel="noopener">Aven</a></h3>
+          <p class="entry-meta">Software Engineering Intern &middot; May 2026 &ndash; Aug 2026</p>
+        </div>
+      </article>
+
+      <article class="entry">
+        <div class="carousel">
+          <div class="carousel-track">
+            <img src="images/exp-bair-agenticrobotics.png" alt="Simulated bimanual robot arms between two drawer cabinets" onerror="this.onerror=null;this.src='images/placeholder.svg'">
+            <img src="images/exp-bair-abstract.png" alt="Grasp-planning overview for the GET gripper: input image, grasp sampling, and robot execution" onerror="this.onerror=null;this.src='images/placeholder.svg'">
+            <img src="images/exp-bair-concept.png" alt="Bimanual robot manipulating cables amid clutter on a table" onerror="this.onerror=null;this.src='images/placeholder.svg'">
+            <picture class="carousel-slide">
+              <source srcset="images/exp-bair-icp-still.jpg" media="(prefers-reduced-motion: reduce)">
+              <img class="media-contain" src="images/exp-bair-icp.gif" alt="Point cloud being aligned to a 3D object mesh" onerror="this.onerror=null;this.src='images/placeholder.svg'">
+            </picture>
+            <video class="media-zoom-mid" src="images/exp-bair-pi0.mp4" poster="images/exp-bair-pi0-poster.jpg" aria-label="Robot arm beside a pink can and a black bin on a lab bench"
+                   muted loop playsinline preload="none"></video>
+          </div>
+          <button class="carousel-nav prev" aria-label="Previous image">&#8249;</button>
+          <button class="carousel-nav next" aria-label="Next image">&#8250;</button>
+        </div>
+        <div class="entry-body">
+          <h3 class="entry-title"><a href="https://autolab.berkeley.edu/index.shtml" target="_blank" rel="noopener">Berkeley Artificial Intelligence Research</a></h3>
+          <p class="entry-meta">Undergraduate Researcher &middot; Feb 2025 &ndash; Present</p>
+        </div>
+      </article>
+
+      <article class="entry">
+        <div class="carousel">
+          <div class="carousel-track">
+            <img class="img-left" src="images/exp-berkeleytime-1.jpg" alt="Berkeleytime landing page" onerror="this.onerror=null;this.src='images/placeholder.svg'">
+            <img class="img-left" src="images/exp-berkeleytime-2.jpg" alt="Berkeleytime GradTrak planner" onerror="this.onerror=null;this.src='images/placeholder.svg'">
+            <img class="img-left" src="images/exp-berkeleytime-3.jpg" alt="Berkeleytime course catalog" onerror="this.onerror=null;this.src='images/placeholder.svg'">
+          </div>
+          <button class="carousel-nav prev" aria-label="Previous image">&#8249;</button>
+          <button class="carousel-nav next" aria-label="Next image">&#8250;</button>
+        </div>
+        <div class="entry-body">
+          <h3 class="entry-title"><a href="https://berkeleytime.com/" target="_blank" rel="noopener">Berkeleytime</a></h3>
+          <p class="entry-meta">Project Lead &middot; Jan 2026 &ndash; Present</p>
+        </div>
+      </article>
+
+      <article class="entry">
+        <div class="carousel">
+          <div class="carousel-track">
+            <img src="images/exp-frc.jpg" alt="Team 604 robot displayed with 2024 FIRST competition award banners" onerror="this.onerror=null;this.src='images/placeholder.svg'">
+          </div>
+          <button class="carousel-nav prev" aria-label="Previous image">&#8249;</button>
+          <button class="carousel-nav next" aria-label="Next image">&#8250;</button>
+        </div>
+        <div class="entry-body">
+          <h3 class="entry-title"><a href="https://604robotics.com/" target="_blank" rel="noopener">FIRST Robotics Competition &mdash; Team 604 Quixilver</a></h3>
+          <p class="entry-meta">President &middot; Aug 2020 &ndash; Aug 2024</p>
+        </div>
+      </article>
+    </section>
+
     <!-- ===== Research ===== -->
     <section class="stacked">
       <h2>Research</h2>
@@ -88,11 +163,18 @@
       <article class="entry">
         <div class="carousel">
           <div class="carousel-track">
+            <video class="media-contain" src="images/r2s2r-hardware.mp4" poster="images/r2s2r-hardware-poster.jpg"
+                   muted loop playsinline preload="none"
+                   aria-label="Real robot footage: two arms tip a flat dark box up onto its end on a foam grid mat, while a person repositions the box with a long stick between attempts"></video>
             <video class="media-contain" src="images/r2s2r-cup.mp4" poster="images/r2s2r-cup-poster.jpg"
                    muted loop playsinline preload="none"
                    aria-label="Photorealistic simulation at 2x speed, from four camera views: two robot arms flip a red cup upright on a table"></video>
+            <a class="carousel-slide" href="images/r2s2r-environment.jpg" target="_blank" rel="noopener">
+              <img class="media-contain" src="images/r2s2r-environment.jpg" loading="lazy"
+                   alt="The robot station from two camera angles. Left: real camera images in daylight, with unrelated machinery on the table. Right: the simulated digital twin from matching cameras under night lighting, with two robot arms and a red cup. Opens at full resolution.">
+            </a>
             <a class="carousel-slide" href="images/r2s2r-can.jpg" target="_blank" rel="noopener">
-              <img class="media-contain" src="images/r2s2r-can.jpg" loading="lazy"
+              <img class="media-contain" src="images/r2s2r-can-home.jpg" loading="lazy"
                    alt="The same view of a tomato can three ways: source photograph, untextured reconstructed mesh, and appearance-matched render. Opens at full resolution.">
             </a>
           </div>
@@ -100,16 +182,11 @@
           <button class="carousel-nav next" aria-label="Next image">&#8250;</button>
         </div>
         <div class="entry-body">
-          <p class="entry-meta">Ongoing research &middot; Berkeley AUTOLab</p>
-          <h3 class="entry-title"><a href="research/r2s2r/">Real2Sim2Real for Non-Prehensile Manipulation</a></h3>
+          <p class="entry-meta">Preliminary results</p>
+          <h3 class="entry-title">Real2Sim2Real for Non-Prehensile Manipulation</h3>
           <p class="entry-description">
-            Building a pipeline from real object captures to simulated manipulation and visual-policy training.
-            My work focuses on object reconstruction, staged PPO policies for cup manipulation, and diagnosing
-            contact-physics errors in GPU simulation.
-          </p>
-          <p class="entry-links">
-            <a href="research/r2s2r/#demos">Demos</a>
-            <a href="research/r2s2r/#technical-notes">Technical notes</a>
+            One stereo object capture + one human demo &rarr; PPO in a MuJoCo Warp environment &rarr; VLA post-training with rendered actor rollouts &rarr; non-prehensile manipulation in real.
+            Click <a href="research/r2s2r/">here</a> for more details!
           </p>
         </div>
       </article>
@@ -186,81 +263,6 @@
       </article>
     </section>
 
-    <!-- ===== Experience ===== -->
-    <!--
-      To add more photos to any entry, just add more <img> tags inside
-      .carousel-track. The left/right arrows appear automatically.
-    -->
-    <section>
-      <h2>Experience</h2>
-
-      <article class="entry">
-        <div class="carousel">
-          <div class="carousel-track">
-            <img src="images/exp-aven.webp" alt="Hand holding an Aven credit card" onerror="this.onerror=null;this.src='images/placeholder.svg'">
-          </div>
-          <button class="carousel-nav prev" aria-label="Previous image">&#8249;</button>
-          <button class="carousel-nav next" aria-label="Next image">&#8250;</button>
-        </div>
-        <div class="entry-body">
-          <h3 class="entry-title"><a href="https://www.aven.com/" target="_blank" rel="noopener">Aven</a></h3>
-          <p class="entry-meta">Software Engineering Intern &middot; May 2026 &ndash; Aug 2026</p>
-        </div>
-      </article>
-
-      <article class="entry">
-        <div class="carousel">
-          <div class="carousel-track">
-            <img src="images/exp-bair-agenticrobotics.png" alt="Simulated bimanual robot arms between two drawer cabinets" onerror="this.onerror=null;this.src='images/placeholder.svg'">
-            <img src="images/exp-bair-abstract.png" alt="Grasp-planning overview for the GET gripper: input image, grasp sampling, and robot execution" onerror="this.onerror=null;this.src='images/placeholder.svg'">
-            <img src="images/exp-bair-concept.png" alt="Bimanual robot manipulating cables amid clutter on a table" onerror="this.onerror=null;this.src='images/placeholder.svg'">
-            <picture class="carousel-slide">
-              <source srcset="images/exp-bair-icp-still.jpg" media="(prefers-reduced-motion: reduce)">
-              <img class="media-contain" src="images/exp-bair-icp.gif" alt="Point cloud being aligned to a 3D object mesh" onerror="this.onerror=null;this.src='images/placeholder.svg'">
-            </picture>
-            <video class="media-zoom-mid" src="images/exp-bair-pi0.mp4" poster="images/exp-bair-pi0-poster.jpg" aria-label="Robot arm beside a pink can and a black bin on a lab bench"
-                   muted loop playsinline preload="none"></video>
-          </div>
-          <button class="carousel-nav prev" aria-label="Previous image">&#8249;</button>
-          <button class="carousel-nav next" aria-label="Next image">&#8250;</button>
-        </div>
-        <div class="entry-body">
-          <h3 class="entry-title"><a href="https://autolab.berkeley.edu/index.shtml" target="_blank" rel="noopener">Berkeley Artificial Intelligence Research</a></h3>
-          <p class="entry-meta">Undergraduate Researcher &middot; Feb 2025 &ndash; Present</p>
-        </div>
-      </article>
-
-      <article class="entry">
-        <div class="carousel">
-          <div class="carousel-track">
-            <img class="img-left" src="images/exp-berkeleytime-1.jpg" alt="Berkeleytime landing page" onerror="this.onerror=null;this.src='images/placeholder.svg'">
-            <img class="img-left" src="images/exp-berkeleytime-2.jpg" alt="Berkeleytime GradTrak planner" onerror="this.onerror=null;this.src='images/placeholder.svg'">
-            <img class="img-left" src="images/exp-berkeleytime-3.jpg" alt="Berkeleytime course catalog" onerror="this.onerror=null;this.src='images/placeholder.svg'">
-          </div>
-          <button class="carousel-nav prev" aria-label="Previous image">&#8249;</button>
-          <button class="carousel-nav next" aria-label="Next image">&#8250;</button>
-        </div>
-        <div class="entry-body">
-          <h3 class="entry-title"><a href="https://berkeleytime.com/" target="_blank" rel="noopener">Berkeleytime</a></h3>
-          <p class="entry-meta">Project Lead &middot; Jan 2026 &ndash; Present</p>
-        </div>
-      </article>
-
-      <article class="entry">
-        <div class="carousel">
-          <div class="carousel-track">
-            <img src="images/exp-frc.jpg" alt="Team 604 robot displayed with 2024 FIRST competition award banners" onerror="this.onerror=null;this.src='images/placeholder.svg'">
-          </div>
-          <button class="carousel-nav prev" aria-label="Previous image">&#8249;</button>
-          <button class="carousel-nav next" aria-label="Next image">&#8250;</button>
-        </div>
-        <div class="entry-body">
-          <h3 class="entry-title"><a href="https://604robotics.com/" target="_blank" rel="noopener">FIRST Robotics Competition &mdash; Team 604 Quixilver</a></h3>
-          <p class="entry-meta">President &middot; Aug 2020 &ndash; Aug 2024</p>
-        </div>
-      </article>
-    </section>
-
     <!-- ===== Projects ===== -->
     <section class="stacked">
       <h2>Projects</h2>
@@ -316,10 +318,15 @@
       prev.addEventListener('click', function () { go(-1); });
       next.addEventListener('click', function () { go(1); });
 
+      var counter = document.createElement('span');
+      counter.className = 'carousel-count';
+      c.appendChild(counter);
+
       // Keep hidden slides out of the tab order.
       function syncActive() {
         var active = Math.round(track.scrollLeft / track.clientWidth);
         slides.forEach(function (slide, i) { slide.inert = i !== active; });
+        counter.textContent = (active + 1) + ' / ' + count;
       }
       track.addEventListener('scroll', syncActive, { passive: true });
       syncActive();

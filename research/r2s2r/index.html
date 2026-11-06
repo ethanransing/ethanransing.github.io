@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Real2Sim2Real for Non-Prehensile Manipulation &middot; Ethan Ransing</title>
-  <meta name="description" content="Ethan Ransing's ongoing research at Berkeley AUTOLab: object reconstruction, staged PPO cup manipulation, and contact-physics diagnostics in GPU simulation.">
+  <meta name="description" content="A Berkeley AUTOLab project on teaching robots hands-on skills in simulation and using them on real hardware.">
   <link id="favicon" rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text x=%2250%22 y=%2255%22 font-size=%22120%22 text-anchor=%22middle%22 dominant-baseline=%22central%22>🧋</text></svg>">
 
   <!-- Set theme before paint to avoid a flash -->
@@ -41,232 +41,221 @@
 
     <header class="project-header">
       <h1>Real2Sim2Real for Non-Prehensile Manipulation</h1>
-      <p class="entry-meta">Ongoing research &middot; Berkeley AUTOLab</p>
     </header>
 
-    <section id="demos">
-      <h2>Overview and demonstration</h2>
-      <p>
-        This project turns captures of real objects into simulated manipulation tasks, then uses those
-        tasks to train visual policies. The workflow has five stages:
-      </p>
-      <ol>
-        <li><strong>Real capture.</strong> Calibrated RGB and depth views of objects, plus real demonstrations.</li>
-        <li><strong>Simulation.</strong> Reconstructed assets and a calibrated bimanual scene in GPU contact simulation.</li>
-        <li><strong>Teacher policy.</strong> Reinforcement learning on privileged simulator state, producing contact-rich motions.</li>
-        <li><strong>Rendered experience.</strong> Verified simulated motions rendered from multiple views under varied lighting.</li>
-        <li><strong>Visual policy.</strong> &pi;0.5 fine-tuned on the rendered experience.</li>
+    <p>
+      Non-prehensile motion allows for the manipulation of objects too large to 
+      fit in a parallel-jaw gripper. We're broadly interested in coming up with a 
+      scalable method to learn these manipulation strategies, inspired by the prior 
+      works in Real2Sim and Sim2Real! 
+    </p>
+
+    <section>
+      <ol class="pipeline" aria-label="Project pipeline">
+        <li>Capture real objects and a human demonstration</li>
+        <li>Build a digital copy of the cell and objects, plus contact targets from the tracked hand and object</li>
+        <li>Train with reinforcement learning in simulation, guided by those contact targets</li>
+        <li>Render successful runs from many views and lighting conditions</li>
+        <li>Train a vision policy on the renders, then test it on the robot</li>
       </ol>
-
-      <figure>
-        <video src="../../images/r2s2r-cup.mp4" poster="../../images/r2s2r-cup-poster.jpg"
-               controls muted playsinline preload="none"
-               aria-label="Photorealistic simulation at 2x speed, from four camera views: two robot arms flip a red cup upright on a table, then release it"></video>
-        <figcaption>
-          Photorealistic simulation, not hardware footage, sped up to 2&times; with every original frame kept and none interpolated.
-          The first 25 seconds of one selected successful rollout from the 32-start evaluation described below.
-          <a href="../../images/r2s2r-cup-full.mp4" target="_blank" rel="noopener">Full 36-second rollout at original speed</a> (7.3 MB).
-        </figcaption>
-      </figure>
     </section>
 
-    <section id="contributions">
-      <h2>My contributions</h2>
-      <ul>
-        <li><strong>Cup-policy development.</strong> Task curriculum, reward and contact engineering, and integration of the learned stages with an engineered controller.</li>
-        <li><strong>Demonstration and contact guidance.</strong> Using a contact reference derived from a demonstration to guide where and how the policy engages the cup.</li>
-        <li><strong>Simulator contact diagnostics.</strong> Separating collider geometry errors from numerical collision errors, then evaluating a fix for each.</li>
-        <li><strong>Reusable object reconstruction pipeline.</strong> Capture preparation, metric editable geometry, photographic texture fitting, Blender evaluation, held-out quality gates, and portable asset bundles.</li>
-      </ul>
+    <section>
+      <h2>Real2Sim</h2>
       <p>
-        The simulation station and renderer are shared team infrastructure. The residual-PPO and &pi;0.5
-        results below are broader team work, and are labeled that way.
+        Parallel-jaw graps can tolerate small shape errors, but in non-prehensile manipulation (such as pushing or tipping), a small shape error changes
+        where contact happens and how the object moves. With this method, I observed errors under 1 mm (< 1%) in key dimensions, which in combination with domain randomization of the mesh during PPO, helps policies transfer to real.
       </p>
-    </section>
+      <p>An agent does the reconstruction, inspired by <a href="https://arxiv.org/abs/2607.19190" target="_blank" rel="noopener">Agentic Real2Sim</a> and <a href="https://arxiv.org/abs/2610.18835" target="_blank" rel="noopener">RoboSimStudio</a>. 
+        The goal is for this pipeline to work robustly for arbitrary objects.
 
-    <section id="technical-notes">
-      <h2>Learning the cup manipulation sequence</h2>
+      <h3>Mesh construction</h3>
       <p>
-        The task is to flip a cup with two arms and leave it standing on the table. A flip counts as
-        successful only if the cup is upright, supported by the table, released and settled, and still
-        valid at the end of the episode. This is a staged controller, not one end-to-end neural policy:
+        The agent separates the object from its background, then writes code that fits
+        a mesh to the depth and outlines across views. It uses the simplest shape the evidence supports and labels unseen surfaces.
       </p>
-      <ol>
-        <li><strong>First-tip PPO.</strong> A learned actor makes the first tip. It was trained with PPO plus imitation.</li>
-        <li><strong>Physical hand repositioning.</strong> An explicit controller moves the hands into position for the second stage. It runs in the physics simulation, so nothing is teleported at the handoff.</li>
-        <li><strong>Finishing PPO.</strong> A second learned actor completes the flip. It was trained with ordinary PPO, without imitation.</li>
-      </ol>
-      <p>
-        Each actor reads 243 privileged state and contact-reference features, and outputs 12 relative
-        Cartesian commands (translation and rotation for each hand) every 40 ms over a 1 ms physics step.
-        The finisher is rewarded for qualified completion, new orientation progress, contact acquisition,
-        approach, and bounded demonstration-contact progress. Its costs cover robot&ndash;cup force above 5 N,
-        forbidden collisions, sustained robot&ndash;table load, abrupt action changes, and failures.
-      </p>
-      <p class="result">
-        <strong>19/32 retained full flips</strong> in a nominal development evaluation with a 36-second
-        deadline. The 32 starts were frozen development starts, not training data. This used the historical
-        simulator, before the later contact corrections, and the completion hold is a controller intervention.
-      </p>
-    </section>
+      <div class="recon-steps">
+        <figure>
+          <img src="../../images/r2s2r-recon-photo.jpg" loading="lazy" width="450" height="530" alt="Photograph of a red food can on a foam mat">
+          <figcaption>Photo</figcaption>
+        </figure>
+        <figure>
+          <img src="../../images/r2s2r-recon-depth.jpg" loading="lazy" width="450" height="530" alt="Grayscale depth map of the same view, where darker is closer">
+          <figcaption>Depth</figcaption>
+        </figure>
+        <figure>
+          <img src="../../images/r2s2r-recon-mask.jpg" loading="lazy" width="225" height="265" alt="The can separated from its background">
+          <figcaption>Object separated from background</figcaption>
+        </figure>
+        <figure>
+          <img src="../../images/r2s2r-recon-mesh.jpg" loading="lazy" width="225" height="265" alt="Untextured gray 3D mesh of the can from the same view">
+          <figcaption>Fitted mesh</figcaption>
+        </figure>
+        <figure>
+          <img src="../../images/r2s2r-recon-fit.jpg" loading="lazy" width="225" height="265" alt="Photo of the can with the outline of the photo and the outline of the mesh drawn on top of each other">
+          <figcaption>Fit check: photo outline (green), mesh (red)</figcaption>
+        </figure>
+      </div>
 
-    <section id="contact-physics">
-      <h2>Diagnosing contact physics</h2>
+      <h3>Appearance matching</h3>
       <p>
-        Unexpected contact during cup rollouts could have come from geometry, rendering, timing, or collision
-        arithmetic, so I tested those explanations separately instead of tuning around them in the reward.
-        Two distinct issues came out of that work, and each fix was evaluated on its own.
+        This step is important for downstream VLA post-training. We project the training
+        photos onto the mesh and renders it in Blender. The agent reviews the errors and can suggest a material or shape
+        change, which is only kept if it holds up on the validation views.
       </p>
-
-      <h3>Geometry discrepancy</h3>
-      <p>
-        The gripper's box colliders did not match its visible meshes. Their corners extended about 2.5 mm
-        beyond the visible pads, so the simulator could report contact where no visible surface touched the cup.
-      </p>
-      <figure>
-        <a href="../../images/r2s2r-contact-original.png" target="_blank" rel="noopener">
-          <img src="../../images/r2s2r-contact-original.png" loading="lazy" width="2250" height="750"
-               alt="Three plots of a saved pose. The cyan collision boxes extend past the gray gripper pad, and the yellow contact point sits on a box corner above the visible pad, just under the red cup.">
-        </a>
-        <figcaption>
-          Original colliders: box corners extend about 2.5 mm beyond the visible gripper pads.
-          <a href="../../images/r2s2r-contact-original.png" target="_blank" rel="noopener">Full resolution</a>.
-        </figcaption>
-      </figure>
-      <figure>
-        <a href="../../images/r2s2r-contact-fitted.png" target="_blank" rel="noopener">
-          <img src="../../images/r2s2r-contact-fitted.png" loading="lazy" width="2250" height="750"
-               alt="The same saved pose with fitted cyan convex hulls that follow the gray pad surface. The yellow point marks the original box contact location, now clear of the fitted geometry.">
-        </a>
-        <figcaption>
-          Fitted convex replacement at the same saved pose; the yellow point marks the original box contact.
-          <a href="../../images/r2s2r-contact-fitted.png" target="_blank" rel="noopener">Full resolution</a>.
-        </figcaption>
-      </figure>
-      <p class="result">
-        The fitted replacement achieved <strong>at most 0.053 mm sampled outer-surface mismatch</strong>,
-        measured over 918 samples per pad. This is not a certified surface-error bound, and no full-policy
-        success gain has been established.
+      <div class="recon-steps">
+        <figure>
+          <img src="../../images/r2s2r-recon-texture.jpg" loading="lazy" width="450" height="530" alt="Flattened texture map of the can built from the photographs">
+          <figcaption>Photos projected onto the mesh</figcaption>
+        </figure>
+        <figure>
+          <img src="../../images/r2s2r-recon-render.jpg" loading="lazy" width="225" height="265" alt="Render of the textured mesh from the same view as the photo">
+          <figcaption>Render</figcaption>
+        </figure>
+        <figure>
+          <img src="../../images/r2s2r-recon-error.jpg" loading="lazy" width="225" height="265" alt="Heat map of the difference between the render and the photo, brightest around the printed text and edges">
+          <figcaption>Error against the photo</figcaption>
+        </figure>
+        <figure>
+          <img src="../../images/r2s2r-recon-heldout-photo.jpg" loading="lazy" width="225" height="265" alt="Photo of the can from a view withheld from fitting">
+          <figcaption>Photo the agent never saw</figcaption>
+        </figure>
+        <figure>
+          <img src="../../images/r2s2r-recon-heldout-render.jpg" loading="lazy" width="225" height="265" alt="Render of the can from that withheld view, with some visible texture seams">
+          <figcaption>Render of that view</figcaption>
+        </figure>
+      </div>
+      <p class="recon-note">
+        
       </p>
 
-      <h3>Numerical collision issue</h3>
-      <p>
-        Separately, a minimal cup and table reproduction isolated numerical errors in GPU GJK simplex
-        projection: overlapping shapes could produce no contact. I evaluated an opt-in, higher-precision
-        correction using matched physical replays.
-      </p>
-      <p class="result">
-        Missing-contact events fell from <strong>247/3,000 to 0/3,000 steps</strong> across three selected
-        one-second diagnostic windows. This is a bounded diagnostic from a small development cohort. It is not
-        proof of general solver correctness or of improved policy reliability.
-      </p>
-    </section>
-
-    <section id="reconstruction">
-      <h2>Reconstructing objects for simulation</h2>
-      <p>
-        The reconstruction pipeline converts calibrated captures into editable, metric geometry with textures
-        fitted from training photographs. Assets are rendered in Blender and scored on views withheld from
-        generation, so simulated tasks can start from assets with recorded quality checks.
-      </p>
-      <figure>
-        <a href="../../images/r2s2r-can.jpg" target="_blank" rel="noopener">
-          <img src="../../images/r2s2r-can.jpg" loading="lazy" width="1426" height="560"
-               alt="The same view of a tomato can three ways: source photograph, untextured reconstructed mesh, and appearance-matched render with visible texture seams.">
-        </a>
-        <figcaption>
-          Source photograph, untextured mesh, and appearance-matched render, all from one held-out camera.
-          This can remains <em>needs review</em>: texture seams are visible, and some appearance, texture-coverage,
-          and validation depth gates did not pass.
-          <a href="../../images/r2s2r-can.jpg" target="_blank" rel="noopener">Full resolution</a>.
-        </figcaption>
-      </figure>
       <figure>
         <a href="../../images/r2s2r-bottle.jpg" target="_blank" rel="noopener">
           <img src="../../images/r2s2r-bottle.jpg" loading="lazy" width="1500" height="1350"
                alt="Three rows of bottle views in five columns: reference photograph, published final asset, fixed-geometry control, fresh reconstruction with visible surface artifacts, and refined reconstruction with those artifacts removed.">
         </a>
         <figcaption>
-          Left to right: reference photograph, previously published asset, fixed-geometry control, fresh
-          reconstruction, and refined reconstruction, on held-out views.
-          <a href="../../images/r2s2r-bottle.jpg" target="_blank" rel="noopener">Full resolution</a>.
+          Left to right: photo, an earlier model, a comparison model, a first attempt, and the refined result. The
+          refined outline matches the photos closely (silhouette IoU 0.95 on test views), after some directed refinement.
         </figcaption>
       </figure>
-      <p class="result">
-        The refined bottle reached <strong>silhouette IoU 0.9536</strong> and
-        <strong>depth-consistency MAE 1.6758 mm</strong> on nine historical test views. The result required
-        directed refinement, because the initial fresh generation did not pass. Depth was compared against
-        estimated sensor depth, so this agreement is not independent physical dimensional accuracy.
-      </p>
-      <p>
-        The bowl is another example, run with default prompts and no object-specific intervention. Its
-        status remains <em>needs review</em>: the held-out test views pass the quality gates, but validation
-        views fail them, and the evidence points to an input alignment problem in the capture.
-      </p>
-      <figure class="figure-narrow">
-        <a href="../../images/r2s2r-bowl.jpg" target="_blank" rel="noopener">
-          <img src="../../images/r2s2r-bowl.jpg" loading="lazy" width="1150" height="1800"
-               alt="Six rows of bowl views in five columns: reference, render, contour overlay on the photograph, absolute RGB error heat map, and neutral gray geometry.">
-        </a>
-        <figcaption>
-          Held-out bowl views: reference, render, contour overlay, RGB error, and editable geometry.
-          <a href="../../images/r2s2r-bowl.jpg" target="_blank" rel="noopener">Full resolution</a>.
-        </figcaption>
-      </figure>
-    </section>
 
-    <section id="team-pipeline">
-      <h2>Team pipeline and results</h2>
+      <h3>Object pose and contact point estimation</h3>
       <p>
-        <em>This section is broader team work, not my individual result.</em> The team uses a residual-PPO
-        teacher to generate simulated motions, verifies them, renders them from multiple views, and fine-tunes
-        &pi;0.5 on the result. The teacher configuration reported here is called H1.
+        With the human demo, we track their hand with
+        <a href="https://arxiv.org/abs/2409.12259" target="_blank" rel="noopener">WiLoR</a> and the cup with
+        <a href="https://arxiv.org/abs/2312.08344" target="_blank" rel="noopener">FoundationPose</a>. Wherever the
+        hand comes within 10 mm of the cup, we mark that spot on the cup's surface as a contact target, adapting the
+        contact extraction from <a href="https://arxiv.org/abs/2607.00033" target="_blank" rel="noopener">CHORD</a>.
       </p>
       <figure>
-        <a href="../../images/r2s2r-h1-coverage.png" target="_blank" rel="noopener">
-          <img src="../../images/r2s2r-h1-coverage.png" loading="lazy" width="2080" height="1440"
-               alt="Team coverage charts comparing the reference controller with H1 by yaw, arm role, and table position. H1, labeled PPO, completes 208 layouts and the reference completes 86, from the same 480 proposals.">
-        </a>
+        <div class="demo-grid">
+          <img src="../../images/r2s2r-demo-1.jpg" loading="lazy" width="860" height="484" alt="Human demonstration with tracking overlaid. The first tip begins: one fingertip contact on the base of the upside-down cup.">
+          <img src="../../images/r2s2r-demo-2.jpg" loading="lazy" width="860" height="484" alt="Human demonstration with tracking overlaid. The cup tips over as two fingertips push on its base.">
+          <img src="../../images/r2s2r-demo-3.jpg" loading="lazy" width="860" height="484" alt="Human demonstration with tracking overlaid. The cup lying on its side with two fingertip contacts at its base.">
+          <img src="../../images/r2s2r-demo-4.jpg" loading="lazy" width="860" height="484" alt="Human demonstration with tracking overlaid. The cup rising toward upright with two fingertip contacts near its base.">
+        </div>
         <figcaption>
-          Team result, simulation data-generation coverage on the same 480 proposals. REF is the
-          demonstration-derived reference controller; PPO is H1.
-          <a href="../../images/r2s2r-h1-coverage.png" target="_blank" rel="noopener">Full resolution</a>.
+          The recorded demonstration with tracking drawn on top. Blue: tracked cup. Red: cup surface near the tracked
+          hand. Yellow: contact points. These are estimates based on distance, not measured touches or forces.
         </figcaption>
       </figure>
-      <ul>
-        <li><strong>Layout yield: 208 versus 86</strong> complete layouts from 480 proposals, approximately 2.4&times; the usable layouts of a demonstration-derived reference controller.</li>
-        <li><strong>Fresh confirmation: 89/256 versus 43/256</strong> full paths, in a separate simulation confirmation.</li>
-        <li><strong>H1 student: 20,000 updates</strong> on 832 physical trajectories and 1,664 lighting episodes. Training completed in the November 5 repository snapshot; student task evaluation was still pending.</li>
-      </ul>
       <p>
-        Both comparisons are against that reference controller, not from-scratch PPO, and both are in
-        simulation. They do not show that H1 beats from-scratch PPO or improves hardware performance.
-      </p>
-      <p>
-        Earlier &pi;0.5 box policies, which are not H1, produced selected real-robot successes that were
-        reviewed visually. Those examples are not an aggregate hardware success rate.
+        These targets feed into the reinforcement learning reward. The policy earns credit for reaching them and for turning the cup while it
+        touches them. The largest reward is for leaving the cup upright, released and settled. Penalties cover too much
+        force on the cup, forbidden collisions, and pressing into the table.
       </p>
     </section>
 
-    <section id="limitations">
-      <h2>Limitations and ongoing work</h2>
-      <ul>
-        <li><strong>Cup policy.</strong> Simulation only, with no sim-to-real transfer. The 19/32 result has not been re-measured under the corrected contact physics. Reviewed failures include a finishing actor missing the cup, a sideways roll, and a repositioning abort.</li>
-        <li><strong>Contact physics.</strong> The corrections are opt-in and backed by bounded diagnostics, with no measured gain in policy success.</li>
-        <li><strong>Reconstruction.</strong> Unobserved surfaces are inferred and textures retain capture lighting. None of these examples shows unattended, high-quality results on every new object.</li>
-        <li><strong>Ongoing.</strong> H1 student task evaluation is pending, and further reconstruction candidates have not yet been validated.</li>
-      </ul>
+    <section>
+      <h2>Task: flipping a solo cup</h2>
+      <p>
+      </p>
+
+      <h3>Splitting the task using the cup's pose</h3>
+      <p>
+        Two learned policies handle the flip. Once the cup is on its side and nearly still, a scripted step repositions
+        the hands and the second policy takes over.
+      </p>
+      <div class="demo-grid stage-pair">
+        <figure>
+          <img src="../../images/r2s2r-stage-1.jpg" loading="lazy" width="336" height="190" alt="First policy pushing the base of the upside-down cup">
+          <figcaption>First policy: cup upside down</figcaption>
+        </figure>
+        <figure>
+          <img src="../../images/r2s2r-stage-2.jpg" loading="lazy" width="336" height="190" alt="Cup resting on its side with both grippers clear of it">
+          <figcaption>Second policy: cup on its side</figcaption>
+        </figure>
+      </div>
+
+      <h3>A soft, rotationally symmetric contact reward</h3>
+      <p>
+        We turn each demonstrated contact point into a ring. The reward fades
+        smoothly with distance from that ring, guiding the policy without forcing an exact motion.
+      </p>
+      <div class="clip-grid">
+          <figure>
+            <img src="../../images/r2s2r-ring-observed.jpg" loading="lazy" width="450" height="450" alt="Gray cup with yellow dots on its base, marking contact points seen in the human demonstration">
+            <figcaption>Contact points from the demonstration (first tip)</figcaption>
+          </figure>
+          <figure>
+            <img src="../../images/r2s2r-ring-stage1.jpg" loading="lazy" width="450" height="450" alt="Gray cup with a soft red band covering the base, centered on the demonstrated contacts">
+            <figcaption>Reward target during the first tip</figcaption>
+          </figure>
+          <figure>
+            <img src="../../images/r2s2r-ring-stage2.jpg" loading="lazy" width="450" height="450" alt="Gray cup with a soft red band around the wall near the base">
+            <figcaption>Reward target during the second tip</figcaption>
+          </figure>
+      </div>
+      <p class="recon-note">Brighter red means more reward for touching that spot.</p>
+
+      <h3>Results</h3>
+      <p>
+        The full sequence completed 19 of 32 tries in simulation. Here are six tries picked at random, three that
+        worked and three that didn't:
+      </p>
+      <div class="clip-grid">
+        <figure>
+          <video src="../../images/r2s2r-cup-try-2.mp4" muted loop playsinline preload="metadata" aria-label="Simulated try at 2x speed: the arms flip the cup and it stays upright"></video>
+          <figcaption>Worked</figcaption>
+        </figure>
+        <figure>
+          <video src="../../images/r2s2r-cup-try-28.mp4" muted loop playsinline preload="metadata" aria-label="Simulated try at 2x speed: the arms flip the cup and it stays upright"></video>
+          <figcaption>Worked</figcaption>
+        </figure>
+        <figure>
+          <video src="../../images/r2s2r-cup-try-29.mp4" muted loop playsinline preload="metadata" aria-label="Simulated try at 2x speed: the arms flip the cup and it stays upright"></video>
+          <figcaption>Worked</figcaption>
+        </figure>
+        <figure>
+          <video src="../../images/r2s2r-cup-try-13.mp4" muted loop playsinline preload="metadata" aria-label="Simulated try at 2x speed: the first tip works, then the second policy misses the cup"></video>
+          <figcaption>Failed: the second policy misses the cup</figcaption>
+        </figure>
+        <figure>
+          <video src="../../images/r2s2r-cup-try-21.mp4" muted loop playsinline preload="metadata" aria-label="Simulated try at 2x speed: the repositioning step stops and the cup stays on its side"></video>
+          <figcaption>Failed: repositioning stops, and the cup stays on its side</figcaption>
+        </figure>
+        <figure>
+          <video src="../../images/r2s2r-cup-try-27.mp4" muted loop playsinline preload="metadata" aria-label="Simulated try at 2x speed: the cup rolls sideways during the second turn and never stands upright"></video>
+          <figcaption>Failed: the cup rolls sideways on the second turn</figcaption>
+        </figure>
+      </div>
     </section>
   </main>
 
   <script>
-    // Pause the demonstration when it leaves the viewport.
+    // Play videos only while they're on screen. With reduced motion, leave playback to the viewer.
+    var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     var demoObserver = new IntersectionObserver(function (entries) {
       entries.forEach(function (e) {
         if (!e.isIntersecting) e.target.pause();
+        else if (!reduceMotion) e.target.play().catch(function () {});
       });
+    }, { threshold: 0.25 });
+    document.querySelectorAll('video').forEach(function (v) {
+      if (reduceMotion) v.controls = true;
+      demoObserver.observe(v);
     });
-    document.querySelectorAll('video').forEach(function (v) { demoObserver.observe(v); });
 
     // Dark-mode toggle
     document.getElementById('theme-toggle').addEventListener('click', function () {
