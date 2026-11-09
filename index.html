@@ -75,7 +75,7 @@
       <p>
         At the <a href="https://autolab.berkeley.edu/index.shtml" target="_blank" rel="noopener">AUTOLab</a>
         (part of the <a href="https://bair.berkeley.edu/" target="_blank" rel="noopener">Berkeley Artificial Intelligence Research</a> cluster),
-        advised by Prof. Ken Goldberg, I currently work on dexterous manipulation and sim environments for robot learning.
+        advised by Prof. Ken Goldberg, I work on robot learning for manipulation, focusing on agentic real-to-sim and sim-to-real reinforcement learning.
         Previously, I've worked on reward models for robot data curation (CoRL 2026), grasp planning for asymmetrical
         grippers (CASE 2026), and cable tracing with targeted robot manipulation primitives, which I presented at IROS 2026!
       </p>
@@ -85,6 +85,8 @@
     <!--
       To add more photos to any entry, just add more <img> tags inside
       .carousel-track. The left/right arrows appear automatically.
+      To add a description, type it inside an entry's empty
+      <p class="entry-description"></p>. Empty ones are hidden.
     -->
     <section>
       <h2>Experience</h2>
@@ -100,14 +102,17 @@
         <div class="entry-body">
           <h3 class="entry-title"><a href="https://www.aven.com/" target="_blank" rel="noopener">Aven</a></h3>
           <p class="entry-meta">Software Engineering Intern &middot; May 2026 &ndash; Aug 2026</p>
+          <p class="entry-description">Sole engineer on the loan officer outreach platform used to originate ~2000 customers + on-call for all loan officer tooling.</p>
         </div>
       </article>
 
       <article class="entry">
         <div class="carousel">
           <div class="carousel-track">
-            <img src="images/exp-bair-agenticrobotics.png" alt="Simulated bimanual robot arms between two drawer cabinets" onerror="this.onerror=null;this.src='images/placeholder.svg'">
+            <video src="images/exp-bair-warp.mp4" poster="images/exp-bair-warp-poster.jpg" aria-label="Two robot arms autonomously folding a green T-shirt, real time, policy trained with WARP-BC"
+                   muted loop playsinline preload="none"></video>
             <img src="images/exp-bair-abstract.png" alt="Grasp-planning overview for the GET gripper: input image, grasp sampling, and robot execution" onerror="this.onerror=null;this.src='images/placeholder.svg'">
+            <img src="images/exp-bair-agenticrobotics.png" alt="Simulated bimanual robot arms between two drawer cabinets" onerror="this.onerror=null;this.src='images/placeholder.svg'">
             <img src="images/exp-bair-concept.png" alt="Bimanual robot manipulating cables amid clutter on a table" onerror="this.onerror=null;this.src='images/placeholder.svg'">
             <picture class="carousel-slide">
               <source srcset="images/exp-bair-icp-still.jpg" media="(prefers-reduced-motion: reduce)">
@@ -122,6 +127,7 @@
         <div class="entry-body">
           <h3 class="entry-title"><a href="https://autolab.berkeley.edu/index.shtml" target="_blank" rel="noopener">Berkeley Artificial Intelligence Research</a></h3>
           <p class="entry-meta">Undergraduate Researcher &middot; Feb 2025 &ndash; Present</p>
+          <p class="entry-description">Grasp planning, cable tracing, reward models for data curation, and now real-to-sim-to-real RL for manipulation. Papers accepted to CoRL, IROS, and CASE.</p>
         </div>
       </article>
 
@@ -138,6 +144,7 @@
         <div class="entry-body">
           <h3 class="entry-title"><a href="https://berkeleytime.com/" target="_blank" rel="noopener">Berkeleytime</a></h3>
           <p class="entry-meta">Project Lead &middot; Jan 2026 &ndash; Present</p>
+          <p class="entry-description">Building optimal course-to-requirement matching for students' four-year plans.</p>
         </div>
       </article>
 
@@ -152,6 +159,7 @@
         <div class="entry-body">
           <h3 class="entry-title"><a href="https://604robotics.com/" target="_blank" rel="noopener">FIRST Robotics Competition &mdash; Team 604 Quixilver</a></h3>
           <p class="entry-meta">President &middot; Aug 2020 &ndash; Aug 2024</p>
+          <p class="entry-description">Led the team my last two years, writing the motion planning, localization, and control code and designing the robots. I also taught 30+ new members programming and CAD.</p>
         </div>
       </article>
     </section>
@@ -207,6 +215,7 @@
             Justin Yu*, Andrew Goldberg*, Kavish Kondap*, Karim El-Refai*, <strong>Ethan Ransing</strong>,
             Qianzhong Chen, Mac Schwager, Fred Shentu, Philipp Wu, Ken Goldberg
           </p>
+          <p class="entry-description"></p>
           <p class="entry-links">
             <a href="https://uynitsuj.github.io/warp-rm/" target="_blank" rel="noopener">Site</a>
             <a href="https://arxiv.org/abs/2606.28320" target="_blank" rel="noopener">Paper</a>
@@ -232,6 +241,7 @@
             Nidhya Shivakumar*, <strong>Ethan Ransing</strong>*, Josh Zhang, Shamak Gowda,
             Kevin Yang, Miles Hua, Anika Agrawal, Justin Yu, Ken Goldberg
           </p>
+          <p class="entry-description"></p>
           <p class="entry-links">
             <a href="https://trace-paper.github.io/" target="_blank" rel="noopener">Site</a>
             <a href="https://arxiv.org/abs/2609.29103" target="_blank" rel="noopener">Paper</a>
@@ -255,6 +265,7 @@
             Andrew Goldberg, <strong>Ethan Ransing</strong>, Anton Kourakin, Cael Magner,
             Edward H. Adelson, Ken Goldberg
           </p>
+          <p class="entry-description"></p>
           <p class="entry-links">
             <a href="https://apgoldberg1.github.io/GET_Planning/" target="_blank" rel="noopener">Site</a>
             <a href="https://apgoldberg1.github.io/GET_Planning/media/2D_and_3D_Grasp_Planners_for_the_GET_Asymmetrical_Gripper.pdf" target="_blank" rel="noopener">Paper</a>
@@ -281,6 +292,7 @@
         <div class="entry-body">
           <h3 class="entry-title">Mobile Foam Ring Launching with Real-Time Control</h3>
           <p class="entry-meta">Feb 2024 &ndash; April 2024</p>
+          <p class="entry-description">I built the software (and hardware) that allows this robot to shoot while driving with one button. It solves the projectile physics every 20ms, leads the shot to cancel its translational motion, and incorporates feedforward and feedback control to achieve ~90% accuracy. This helped us win our championship division and rank #12 globally!</p>
           <p class="entry-links">
             <a href="https://github.com/frc604/2024-public" target="_blank" rel="noopener">Code</a>
             <a href="https://youtu.be/bGivb7bY7kI?si=-EM33_wyTf1t3R8l&t=537" target="_blank" rel="noopener">Interview</a>
@@ -358,10 +370,6 @@
       setFavicon(next);
     });
 
-    /* ===== Analytics (GoatCounter) — inert until configured =====
-       To turn on: make a free site at https://www.goatcounter.com/ and put your
-       site code below (the "CODE" part of CODE.goatcounter.com). That's the only
-       change needed — pageviews and link-click events start working immediately. */
     var GC_CODE = 'ethanransing';   // GoatCounter site code
     if (GC_CODE) {
       // Load GoatCounter (auto-records the pageview: timestamp, referrer, country, browser)

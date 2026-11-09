@@ -264,6 +264,7 @@ section { margin-top: 56px; }
   line-height: 1.5;
   margin: 0.35em 0 0;
 }
+.entry-description:empty { display: none; }
 
 .entry-links {
   display: flex;
